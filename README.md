@@ -1,62 +1,37 @@
 # rust-python-template
 
-A lean, opinionated template for **Rust-core + Python-frontend (PyO3)**
-libraries. Hand it to an agent or a teammate; you should be running tests
-on the wheel within a minute of cloning.
+Rust-core + PyO3 + Python-wrapper monorepo template. `maturin` + `uv` build,
+`just` task surface, abi3 wheels (one per OS/arch covers Python 3.10–3.14),
+dual MIT / Apache-2.0.
 
-## What you get
-
-- A pure-Rust core crate (`-core`) with `#![forbid(unsafe_code)]`, the
-  source of truth for your library's logic.
-- A thin PyO3 FFI crate (`-ffi`) — conversion only, no business logic.
-- A Python wrapper package with `.pyi` type stubs.
-- `maturin` + `uv` build, `just` as the single task surface.
-- abi3 wheels: one wheel per (OS, arch) covers Python 3.10–3.14.
-- A workspace `[lints]` table that denies `unwrap`, `expect`, `panic`,
-  `todo`, `unimplemented`, `dbg!`.
-- Architectural decision records under `docs/decisions/` with a
-  draft → ready → implemented lifecycle.
-- CI for PRs (lint + test + abi3 wheel build, tested on 3.10 and 3.14
-  from the same wheel) and a release workflow with tag-anchored version
-  checking and PyPI Trusted Publisher OIDC.
-- Dual MIT / Apache-2.0 license.
-
-## Using this template
-
-1. Create a new repo from this template on GitHub (or `git clone` it).
-2. Run `./setup.sh` from the repo root. It will prompt for the project
-   name, author, email, and GitHub owner; rename the crates, the Python
-   package, and the metadata across files; commit the result; and delete
-   itself.
-3. Run `just bootstrap` to sync the Python environment and build the FFI
-   extension.
-
-## Quickstart
+## Setup
 
 ```sh
-just bootstrap        # uv sync + maturin develop --release
-just test             # cargo nextest + pytest
-just lint             # cargo fmt --check + clippy + ruff + pyright
+# Create from template on GitHub, then clone, then:
+./setup.sh          # prompt for project name / author / owner, rename, commit, self-delete
+just bootstrap      # uv sync + maturin develop --release
 ```
 
-A complete recipe list: `just --list`.
+## Commands
 
-## Project shape
-
-```
-crates/
-├── rust-python-template-core/   pure Rust, the source of truth
-└── rust-python-template-ffi/    PyO3 bindings, publish = false
-python/rust_python_template/     Python wrapper + .pyi stubs
-tests/rust/                      cargo integration tests against -core
-tests/python/                    pytest against the FFI boundary
-docs/decisions/                  architectural decision records
+```sh
+just test           # cargo nextest + pytest
+just lint           # fmt + clippy + ruff + pyright
+just build          # release wheel to target/wheels/
+just audit          # cargo-deny
 ```
 
-Detailed prerequisites and contributor workflow: [`CONTRIBUTING.md`](./CONTRIBUTING.md).
-Agent guidance: [`CLAUDE.md`](./CLAUDE.md).
+`just --list` for everything.
 
-## License
+## Layout
 
-Dual-licensed under either of [Apache-2.0](./LICENSE-APACHE) or
-[MIT](./LICENSE-MIT) at your option.
+```
+crates/<name>-core/    pure Rust, #![forbid(unsafe_code)], source of truth
+crates/<name>-ffi/     PyO3 bindings, publish = false, conversion only
+python/<name>/         Python wrapper + .pyi stubs
+tests/{rust,python}/   integration tests at each boundary
+docs/decisions/        ADRs with draft → ready → implemented lifecycle
+```
+
+[`CONTRIBUTING.md`](./CONTRIBUTING.md) for the workflow,
+[`CLAUDE.md`](./CLAUDE.md) for agent guidance.
