@@ -34,6 +34,7 @@ unreachable_pub = "warn"
 unused_must_use = "deny"
 
 [workspace.dependencies]
+rust-python-template-core = { path = "crates/rust-python-template-core" }
 thiserror = "2"
 pyo3 = { version = "0.28", default-features = false, features = ["macros", "abi3-py310"] }
 numpy = "0.28"

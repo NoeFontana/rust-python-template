@@ -19,6 +19,6 @@ crate-type = ["cdylib", "rlib"]
 extension-module = ["pyo3/extension-module"]
 
 [dependencies]
-rust-python-template-core = { path = "../rust-python-template-core", version = "0.1.0" }
+rust-python-template-core = { workspace = true }
 pyo3 = { workspace = true }
 numpy = { workspace = true }

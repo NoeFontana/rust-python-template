@@ -112,9 +112,9 @@ jobs:
           python-version: "3.10"
       - uses: actions/download-artifact@v4
         with:
-          # Use one of the manylinux x86_64 wheels for the smoke test.
-          name: dist-linux-x86_64-auto
+          pattern: dist-linux-x86_64-*
           path: dist
+          merge-multiple: true
       - name: install and import
         run: |
           python -m venv .venv-smoke
