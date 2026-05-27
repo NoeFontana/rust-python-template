@@ -36,7 +36,7 @@ Issues = "https://github.com/NoeFontana/rust-python-template/issues"
 dev = [
     "maturin>=1.13,<2.0",
     "pytest>=9",
-    "ruff>=0.15",
+    "ruff>=0.15.14",
     "pyright>=1.1.400",
 ]
 
