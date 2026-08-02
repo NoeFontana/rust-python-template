@@ -37,6 +37,10 @@ lint-py:
     uv run ruff format --check .
     uv run pyright
 
+# Check spelling. Configured by [tool.codespell] in pyproject.toml.
+spell:
+    uv run --with codespell codespell
+
 # Format everything (Rust + Python) and auto-fix safe lint issues.
 fmt:
     cargo fmt --all
