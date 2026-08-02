@@ -246,8 +246,11 @@ Six gates, all new to this repository except the fourth:
    `pytest --doctest-modules python/ --no-cov`, wired into `just docs-test` and
    therefore into `just check`. Rust examples continue under
    `cargo test --doc`.
-3. **Link checking** — `lychee` on the rendered site for PRs touching `docs/`;
-   external links on a weekly schedule, never as a merge gate.
+3. **Link checking** — internal links on published pages are gated per-PR by
+   `mkdocs build --strict` (gate 4). `lychee` runs weekly over the Markdown
+   sources, covering external URLs plus `docs/adr/`, `docs/engineering/` and
+   the root Markdown files that mkdocs does not build. External link checks
+   are too flaky for a merge gate.
 4. **Build success** — `mkdocs build --strict`.
 5. **Spelling** — `codespell`, as a CI step so it gates PRs from forks.
 6. **Generated-page freshness** — regenerate `reference/adr-index.md` and
