@@ -218,7 +218,17 @@ jobs:
       # main publishes the `latest` alias.
       - name: deploy latest
         if: github.ref == 'refs/heads/main'
-        run: uv run mike deploy --push --update-aliases main latest
+        run: |
+          uv run mike deploy --push --update-aliases main latest
+          # Without a default, the site root has no index.html and 404s. A
+          # freshly seeded project has no release tag, so `latest` is the only
+          # sensible root until one exists; the release step below repoints
+          # the root at `stable` once it does.
+          if uv run mike list 2>/dev/null | grep -qw stable; then
+            echo "stable exists; leaving the default alias alone"
+          else
+            uv run mike set-default --push latest
+          fi
 
       # A release tag publishes <major>.<minor> plus the `stable` alias, so
       # patch releases overwrite within their minor (ADR-0003 §"Versioning").
