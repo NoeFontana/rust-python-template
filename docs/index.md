@@ -22,11 +22,23 @@ This block runs as a test on every commit, along with every other fenced
 
 ## Post-Setup
 
-To let GitHub Actions publish the documentation site, configure the repository:
+The documentation is published with [`mike`](https://github.com/jimporter/mike),
+which commits the built site to a `gh-pages` branch. Configure your repository
+to serve from that branch — **the deploy will silently publish nothing until
+you do**:
 
-1. Navigate to **Settings → Pages** and set the source to **GitHub Actions**.
-2. Check that **Settings → Actions → General → Workflow permissions** is set to
-   **Read and write permissions**.
+1. Push to `main` once and let the `deploy-docs` job run. It creates the
+   `gh-pages` branch.
+2. Navigate to **Settings → Pages** and set the source to **Deploy from a
+   branch**, then select **`gh-pages`** and the **`/` (root)** folder. Not
+   "GitHub Actions" — that source is for artifact-based deploys, which this
+   is not.
+3. Check that **Settings → Actions → General → Workflow permissions** is set to
+   **Read and write permissions**, so the deploy job can push that branch.
+
+Once configured, `main` publishes under the `latest` alias and each release tag
+publishes a `<major>.<minor>` version plus the `stable` alias, which the
+version selector in the header exposes.
 
 ## Where things are documented
 

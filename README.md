@@ -43,6 +43,12 @@ Two public API surfaces, two references: the Python wrapper is documented on
 the docs site, and the `-core` crate by rustdoc on [docs.rs](https://docs.rs/).
 See ADR-0003.
 
+The site is published with [`mike`](https://github.com/jimporter/mike), which
+commits to a `gh-pages` branch. After the first deploy creates that branch, set
+**Settings → Pages** → **Deploy from a branch** → **`gh-pages`** → **`/`**
+(not "GitHub Actions"), and **Settings → Actions → General → Workflow
+permissions** → **Read and write permissions**.
+
 [`docs/contributing.md`](./docs/contributing.md) for the workflow,
 [`AGENTS.md`](./AGENTS.md) for agent guidance. Architecture decisions live in
 [`docs/adr/`](./docs/adr/) — read them before proposing structural changes.
