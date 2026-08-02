@@ -1,0 +1,7 @@
+# Domain terms and names codespell would otherwise flag.
+# One lowercase word per line.
+noe
+crate
+crates
+ffi
+abi
