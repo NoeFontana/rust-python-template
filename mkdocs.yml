@@ -1,0 +1,100 @@
+site_name: Rust Python Template
+site_description: A modern Rust-core + Python-frontend (PyO3) project template
+site_url: https://NoeFontana.github.io/rust-python-template/
+repo_url: https://github.com/NoeFontana/rust-python-template
+repo_name: NoeFontana/rust-python-template
+
+validation:
+  nav:
+    omitted_files: warn
+    absolute_links: warn
+  links:
+    absolute_links: warn
+    unrecognized_links: warn
+
+# Engineering history, not user documentation (ADR-0003 §"Information
+# architecture"). `draft_docs` keeps these out of `mkdocs build` while still
+# rendering them in `mkdocs serve` with a DRAFT banner; `not_in_nav` suppresses
+# the `validation.nav.omitted_files` warning above.
+draft_docs: |
+  adr/
+  engineering/
+
+not_in_nav: |
+  adr/
+  engineering/
+
+theme:
+  name: material
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: deep orange
+      accent: deep orange
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: deep orange
+      accent: deep orange
+      toggle:
+        icon: material/weather-night
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - search.highlight
+    - search.share
+    - content.code.copy
+    - content.code.annotate
+
+plugins:
+  - search
+  - social
+  - git-revision-date-localized
+  - macros
+  - minify
+  - mkdocstrings:
+      handlers:
+        python:
+          # The wrapper lives in python/, not src/.
+          paths: [python]
+          options:
+            docstring_style: google
+            merge_init_into_class: true
+            separate_signature: true
+            show_signature_annotations: true
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.tabbed:
+      alternate_style: true
+  - attr_list
+  - md_in_html
+
+nav:
+  - Home: index.md
+  - Tutorials:
+      - Getting started: tutorials/getting-started.md
+  - How-to guides:
+      - Overview: how-to/index.md
+  - Reference:
+      - API: reference/api.md
+      - Decision records: reference/adr-index.md
+  - Explanation:
+      - Architecture overview: explanation/architecture-overview.md
+  - Contributing: contributing.md
+  - Changelog: changelog.md
+
+watch:
+  - python/rust_python_template

@@ -1,0 +1,52 @@
+name: Link check
+
+# External links are checked on a schedule rather than per-PR: they break for
+# reasons unrelated to the change under review, and a flaky merge gate teaches
+# contributors to ignore red. A failure here opens an issue instead.
+on:
+  schedule:
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  links:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - uses: astral-sh/setup-uv@v7
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: just
+
+      - name: uv sync
+        run: uv sync --locked --all-groups
+
+      - name: build the extension module
+        run: uv run maturin develop
+
+      - name: mkdocs build --strict
+        run: just docs-build
+
+      - name: check all links, including external
+        id: lychee
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: --exclude-all-private --no-progress ./site
+          fail: false
+          output: ./lychee/out.md
+
+      - name: open an issue on failure
+        if: steps.lychee.outputs.exit_code != 0
+        uses: peter-evans/create-issue-from-file@v5
+        with:
+          title: Broken links found in the documentation
+          content-filepath: ./lychee/out.md
+          labels: documentation

@@ -87,7 +87,7 @@ jobs:
           python-version: "3.10"
       - uses: astral-sh/setup-uv@v7
       - name: uv sync (dev deps only, skip building the project)
-        run: uv sync --locked --all-extras --no-install-project
+        run: uv sync --locked --group test --no-install-project
       - name: ruff check
         run: uv run ruff check .
       - name: ruff format --check
@@ -119,3 +119,84 @@ jobs:
           uv pip install dist/*.whl pytest
       - name: pytest
         run: uv run pytest tests/python -m "not slow"
+
+  spelling:
+    name: spelling
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      # Run in CI rather than only in pre-commit, so it also gates PRs from
+      # forks, which do not run the contributor's local hooks.
+      - name: codespell
+        uses: codespell-project/actions-codespell@v2
+        with:
+          ignore_words_list: noe
+          ignore_words_file: .codespellignore
+          skip: ./uv.lock,./Cargo.lock,./.git,./target,./site
+
+  changes:
+    name: changes
+    runs-on: ubuntu-latest
+    outputs:
+      docs: ${{ steps.filter.outputs.docs }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            docs:
+              - 'docs/**'
+              - 'mkdocs.yml'
+              - 'tools/docs/**'
+              - 'python/**'
+
+  build-docs:
+    name: build-docs
+    needs: changes
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          # git-revision-date-localized needs history to date the pages.
+          fetch-depth: 0
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - uses: astral-sh/setup-uv@v7
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: just
+      - name: uv sync
+        run: uv sync --locked --all-groups
+
+      # mkdocstrings imports the Python wrapper to render the API reference,
+      # and the wrapper re-exports from the compiled `._core`. Both the docs
+      # build and the docs tests therefore need a built extension module.
+      - name: build the extension module
+        run: uv run maturin develop
+
+      # The generated reference pages are committed. Regenerate them and fail
+      # if the result differs from what the PR carries.
+      - name: check generated pages are current
+        run: |
+          just docs-index
+          git diff --exit-code -- docs/reference/
+
+      - name: docs examples
+        run: just docs-test
+
+      - name: mkdocs build --strict
+        run: just docs-build
+
+      # Internal links only. External links are flaky, so they are checked on
+      # a schedule instead (see link-check.yml) rather than gating merges.
+      - name: check internal links
+        if: needs.changes.outputs.docs == 'true'
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: --offline --exclude-all-private --no-progress ./site
+          fail: true
+
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: ./site

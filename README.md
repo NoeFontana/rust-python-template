@@ -15,13 +15,16 @@ just bootstrap      # uv sync + maturin develop --release
 ## Commands
 
 ```sh
+just check          # lint + test + docs-test: the full gate
 just test           # cargo nextest + pytest
 just lint           # fmt + clippy + ruff + pyright
+just docs           # serve the documentation site locally
 just build          # release wheel to target/wheels/
 just audit          # cargo-deny
 ```
 
-`just --list` for everything.
+`just --list` for everything. CI invokes the same recipes, so a green
+`just check` locally means a green CI.
 
 ## Layout
 
@@ -30,8 +33,16 @@ crates/<name>-core/    pure Rust, #![forbid(unsafe_code)], source of truth
 crates/<name>-ffi/     PyO3 bindings, publish = false, conversion only
 python/<name>/         Python wrapper + .pyi stubs
 tests/{rust,python}/   integration tests at each boundary
-docs/decisions/        ADRs with draft → ready → implemented lifecycle
+docs/                  Diátaxis documentation site (mkdocs-material)
+docs/adr/              architecture decision records (MADR, unpublished)
 ```
 
-[`CONTRIBUTING.md`](./CONTRIBUTING.md) for the workflow,
-[`CLAUDE.md`](./CLAUDE.md) for agent guidance.
+## Documentation
+
+Two public API surfaces, two references: the Python wrapper is documented on
+the docs site, and the `-core` crate by rustdoc on [docs.rs](https://docs.rs/).
+See ADR-0003.
+
+[`docs/contributing.md`](./docs/contributing.md) for the workflow,
+[`AGENTS.md`](./AGENTS.md) for agent guidance. Architecture decisions live in
+[`docs/adr/`](./docs/adr/) — read them before proposing structural changes.

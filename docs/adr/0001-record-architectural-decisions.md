@@ -1,8 +1,18 @@
-# 0001: Record architectural decisions in `docs/decisions/`
+# ADR-0001: Record architectural decisions in `docs/decisions/`
 
-**Status:** implemented
-**Owner:** @NoeFontana
-**Implementation:** initial commit
+- **Status:** superseded by ADR-0002
+- **Date:** 2026-01-01
+- **Deciders:** @NoeFontana
+- **Consulted:** —
+- **Informed:** all contributors
+
+> **Historical record — do not follow.** ADR-0002 supersedes this decision: it
+> moved the directory to `docs/adr/` and replaced this lifecycle with the MADR
+> format. The header block above was reformatted into MADR bullet fields so the
+> shared index generator can parse it; that mechanical change is explicitly
+> authorised by ADR-0002 §"Migrating the existing record". The body below is
+> the original text; the only other changes are two relative links repointed
+> at files the migration moved or removed. No reasoning has been altered.
 
 ## Context
 
@@ -28,7 +38,7 @@ Adopt a lightweight Architectural Decision Record (ADR) practice rooted at
   concrete) and an `implemented` immutability lock (revise by superseding,
   not editing).
 - Sequential four-digit numbering, append-only.
-- [`README.md`](./README.md) is the contract: it states the lifecycle, the
+- `README.md` is the contract: it states the lifecycle, the
   gates, and the agent handoff bar.
 
 Significant changes — anything that touches the public API, the crate
