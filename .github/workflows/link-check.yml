@@ -34,10 +34,22 @@ jobs:
           fail: false
           output: ./lychee/out.md
 
+      # Only when the repository has issues enabled. A template is cloned into
+      # repositories that may have them turned off, and create-issue-from-file
+      # hard-fails there.
       - name: open an issue on failure
-        if: steps.lychee.outputs.exit_code != 0
+        if: steps.lychee.outputs.exit_code != 0 && github.event.repository.has_issues
         uses: peter-evans/create-issue-from-file@v5
         with:
           title: Broken links found in the documentation
           content-filepath: ./lychee/out.md
           labels: documentation
+
+      # Without issues there is nowhere to file the report, so fail the run
+      # instead -- otherwise broken links pass silently.
+      - name: fail if links are broken and issues are disabled
+        if: steps.lychee.outputs.exit_code != 0 && !github.event.repository.has_issues
+        run: |
+          echo "::error::lychee found broken links; issues are disabled on this repository."
+          cat ./lychee/out.md >> "$GITHUB_STEP_SUMMARY"
+          exit 1
