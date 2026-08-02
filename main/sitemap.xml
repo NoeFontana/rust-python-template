@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+         <loc>https://NoeFontana.github.io/rust-python-template/main/</loc>
+         <lastmod>2026-08-02</lastmod>
+    </url>
+    <url>
+         <loc>https://NoeFontana.github.io/rust-python-template/main/changelog/</loc>
+         <lastmod>2026-08-02</lastmod>
+    </url>
+    <url>
+         <loc>https://NoeFontana.github.io/rust-python-template/main/contributing/</loc>
+         <lastmod>2026-08-02</lastmod>
+    </url>
+    <url>
+         <loc>https://NoeFontana.github.io/rust-python-template/main/explanation/architecture-overview/</loc>
+         <lastmod>2026-08-02</lastmod>
+    </url>
+    <url>
+         <loc>https://NoeFontana.github.io/rust-python-template/main/how-to/</loc>
+         <lastmod>2026-08-02</lastmod>
+    </url>
+    <url>
+         <loc>https://NoeFontana.github.io/rust-python-template/main/reference/adr-index/</loc>
+         <lastmod>2026-08-02</lastmod>
+    </url>
+    <url>
+         <loc>https://NoeFontana.github.io/rust-python-template/main/reference/api/</loc>
+         <lastmod>2026-08-02</lastmod>
+    </url>
+    <url>
+         <loc>https://NoeFontana.github.io/rust-python-template/main/tutorials/getting-started/</loc>
+         <lastmod>2026-08-02</lastmod>
+    </url>
+</urlset>
