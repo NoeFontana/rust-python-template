@@ -115,7 +115,7 @@ gate and the CI gate cannot drift apart.
   them to `PyErr` at the boundary.
 - **Docs:** `missing_docs` is a warn-by-default lint. Every public item in
   `-core` should have a doc comment.
-- **PyO3 version:** 0.28 with `abi3-py310`. One wheel covers Python
+- **PyO3 version:** 0.29 with `abi3-py310`. One wheel covers Python
   3.10–3.14. Do not pin a specific Python version.
 - **`unreachable_pub`** is a warn lint; prefer `pub(crate)` for items not in
   the public API.
