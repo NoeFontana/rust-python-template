@@ -67,6 +67,12 @@ include = [
     { path = "LICENSE-APACHE", format = "sdist" },
 ]
 
+# Single source of truth for spelling: pre-commit, CI, and `just spell` all
+# read this, so they cannot disagree.
+[tool.codespell]
+ignore-words = ".codespellignore"
+skip = "uv.lock,Cargo.lock,./.git,./target,./site,./.venv"
+
 [tool.ruff]
 line-length = 88
 indent-width = 4

@@ -126,35 +126,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
+      - uses: astral-sh/setup-uv@v7
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: just
       # Run in CI rather than only in pre-commit, so it also gates PRs from
-      # forks, which do not run the contributor's local hooks.
+      # forks, which do not run the contributor's local hooks. Same recipe,
+      # same config.
       - name: codespell
-        uses: codespell-project/actions-codespell@v2
-        with:
-          ignore_words_list: noe
-          ignore_words_file: .codespellignore
-          skip: ./uv.lock,./Cargo.lock,./.git,./target,./site
-
-  changes:
-    name: changes
-    runs-on: ubuntu-latest
-    outputs:
-      docs: ${{ steps.filter.outputs.docs }}
-    steps:
-      - uses: actions/checkout@v6
-      - uses: dorny/paths-filter@v3
-        id: filter
-        with:
-          filters: |
-            docs:
-              - 'docs/**'
-              - 'mkdocs.yml'
-              - 'tools/docs/**'
-              - 'python/**'
+        run: just spell
 
   build-docs:
     name: build-docs
-    needs: changes
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -197,8 +180,10 @@ jobs:
       #
       # Internal links only. External links are flaky, so they are checked on
       # a schedule instead (see link-check.yml) rather than gating merges.
+      # It runs on every docs build rather than being gated on changed paths:
+      # it takes about a second, which is cheaper than a job to decide whether
+      # to run it.
       - name: check internal links
-        if: needs.changes.outputs.docs == 'true'
         uses: lycheeverse/lychee-action@v2
         with:
           args: --offline --exclude-all-private --no-progress './docs/**/*.md' './*.md'

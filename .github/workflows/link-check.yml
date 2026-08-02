@@ -16,7 +16,6 @@ on:
 
 permissions:
   contents: read
-  issues: write
 
 jobs:
   links:
@@ -24,6 +23,11 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
+      # A failure fails the run and writes the report to the job summary. An
+      # earlier version opened an issue instead, which needed another action
+      # and `issues: write` -- and silently did nothing on a repository with
+      # issues disabled, which is the default for repositories seeded from
+      # this template.
       - name: check all links, including external
         id: lychee
         uses: lycheeverse/lychee-action@v2
@@ -34,22 +38,9 @@ jobs:
           fail: false
           output: ./lychee/out.md
 
-      # Only when the repository has issues enabled. A template is cloned into
-      # repositories that may have them turned off, and create-issue-from-file
-      # hard-fails there.
-      - name: open an issue on failure
-        if: steps.lychee.outputs.exit_code != 0 && github.event.repository.has_issues
-        uses: peter-evans/create-issue-from-file@v5
-        with:
-          title: Broken links found in the documentation
-          content-filepath: ./lychee/out.md
-          labels: documentation
-
-      # Without issues there is nowhere to file the report, so fail the run
-      # instead -- otherwise broken links pass silently.
-      - name: fail if links are broken and issues are disabled
-        if: steps.lychee.outputs.exit_code != 0 && !github.event.repository.has_issues
+      - name: report broken links
+        if: steps.lychee.outputs.exit_code != 0
         run: |
-          echo "::error::lychee found broken links; issues are disabled on this repository."
           cat ./lychee/out.md >> "$GITHUB_STEP_SUMMARY"
+          echo "::error::lychee found broken links; see the job summary."
           exit 1
