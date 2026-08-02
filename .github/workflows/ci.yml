@@ -118,8 +118,13 @@ jobs:
         run: |
           uv venv --python "${{ matrix.python-version }}"
           uv pip install dist/*.whl pytest
+      # Invoke the venv's interpreter directly rather than via `uv run`.
+      # `uv run` discovers the project and re-syncs its environment, which
+      # recreates the venv at the project's own Python version and rebuilds
+      # the package from source -- defeating the point of this job, which is
+      # to exercise the built wheel on each supported interpreter.
       - name: pytest
-        run: uv run pytest tests/python -m "not slow"
+        run: .venv/bin/python -m pytest tests/python -m "not slow"
 
   spelling:
     name: spelling
