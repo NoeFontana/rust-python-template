@@ -189,13 +189,19 @@ jobs:
       - name: mkdocs build --strict
         run: just docs-build
 
+      # Checks the Markdown sources, not the built site: `site_url` makes
+      # mkdocs-material emit root-relative links that --offline cannot resolve
+      # against ./site. Sources also cover docs/adr/ and docs/engineering/,
+      # which draft_docs excludes from the build, so `mkdocs build --strict`
+      # never validates their links.
+      #
       # Internal links only. External links are flaky, so they are checked on
       # a schedule instead (see link-check.yml) rather than gating merges.
       - name: check internal links
         if: needs.changes.outputs.docs == 'true'
         uses: lycheeverse/lychee-action@v2
         with:
-          args: --offline --exclude-all-private --no-progress ./site
+          args: --offline --exclude-all-private --no-progress './docs/**/*.md' './*.md'
           fail: true
 
   # `mike` publishes by committing the built site to the gh-pages branch, so
