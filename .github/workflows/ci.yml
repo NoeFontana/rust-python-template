@@ -169,25 +169,17 @@ jobs:
       - name: docs examples
         run: just docs-test
 
+      # This is the internal-link gate: validation.links.unrecognized_links is
+      # set to warn, and --strict turns warnings into errors, so a broken link
+      # on any published page fails here.
+      #
+      # There is deliberately no link checker on this path. It would only add
+      # coverage of docs/adr/, docs/engineering/ and the root Markdown files,
+      # which mkdocs does not build -- low-severity links, not worth a
+      # third-party action on the job that gates every merge. link-check.yml
+      # covers those, plus external URLs, on a weekly schedule.
       - name: mkdocs build --strict
         run: just docs-build
-
-      # Checks the Markdown sources, not the built site: `site_url` makes
-      # mkdocs-material emit root-relative links that --offline cannot resolve
-      # against ./site. Sources also cover docs/adr/ and docs/engineering/,
-      # which draft_docs excludes from the build, so `mkdocs build --strict`
-      # never validates their links.
-      #
-      # Internal links only. External links are flaky, so they are checked on
-      # a schedule instead (see link-check.yml) rather than gating merges.
-      # It runs on every docs build rather than being gated on changed paths:
-      # it takes about a second, which is cheaper than a job to decide whether
-      # to run it.
-      - name: check internal links
-        uses: lycheeverse/lychee-action@v2
-        with:
-          args: --offline --exclude-all-private --no-progress './docs/**/*.md' './*.md'
-          fail: true
 
   # `mike` publishes by committing the built site to the gh-pages branch, so
   # this job needs `contents: write` and full history. It builds the site
