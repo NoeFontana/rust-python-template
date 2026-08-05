@@ -40,7 +40,7 @@ dev = ["maturin>=1.14.1,<2.0"]
 test = [
     "pytest>=9.1.1",
     "pytest-markdown-docs>=0.9.2",
-    "ruff>=0.16.0",
+    "ruff>=0.16.1",
     "pyright>=1.1.411",
     "pre-commit>=4.6.1",
 ]
